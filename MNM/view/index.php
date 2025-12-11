@@ -22,7 +22,7 @@
         <a href="#"><i class="fa-solid fa-cart-shopping"></i> Giỏ hàng</a>
         <a href="#">Lịch sử đơn hàng</a>
         <a href="#">About</a>
-        <a href="#"><i class="fa-solid fa-user"></i> Đăng nhập</a>
+        <a href="dangnhap.php"><i class="fa-solid fa-user"></i> Đăng nhập</a>
     </nav>
 </header>
 <div class="banner">
