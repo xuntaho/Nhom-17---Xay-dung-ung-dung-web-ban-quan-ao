@@ -6,7 +6,7 @@
   <title>Đăng nhập - MIUSA</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
   <link href="https://fonts.googleapis.com/css2?family=Josefin+Sans:wght@400;700&family=Istok+Web:wght@400;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="../style/css.css">
+  <link rel="stylesheet" href="../style/login.css">
 </head>
 <body>
 <header class="header">
