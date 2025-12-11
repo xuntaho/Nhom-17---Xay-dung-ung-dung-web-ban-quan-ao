@@ -1,15 +1,29 @@
 <?php
 session_start();
+include "../config/database.php";
 
+$thong_bao = "";
+$success = "";
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
-    $ten = $_POST['username'] ?? '';
-    $mk  = $_POST['password'] ?? '';
-    $_SESSION['id_nguoi_dung'] = 1; 
-    $_SESSION['ten_dang_nhap'] = $ten; 
+    $ten = mysqli_real_escape_string($conn, $_POST['username']);
+    $mk  = mysqli_real_escape_string($conn, $_POST['password']);
 
-    header("Location: index.php");
-    exit;
+    $sql = "SELECT * FROM nguoi_dung 
+            WHERE ten_dang_nhap = '$ten' 
+              AND mat_khau = '$mk'";
+
+    $rs = mysqli_query($conn, $sql);
+
+    if (mysqli_num_rows($rs) == 1) {
+        $user = mysqli_fetch_assoc($rs);
+        $_SESSION['id_nguoi_dung'] = $user['id_nguoi_dung'];
+        $_SESSION['ten_dang_nhap'] = $user['ten_dang_nhap'];
+        $success = "Đăng nhập thành công";
+    } 
+    else {
+        $thong_bao = "Sai tên đăng nhập hoặc mật khẩu!";
+    }
 }
 ?>
 <!DOCTYPE html>
@@ -24,21 +38,29 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 </head>
 
 <body>
-
 <header class="header">
     <div class="logo">MIU<span>SA</span></div>
     <nav class="menu">
         <a href="index.php"><i class="fa fa-home"></i> Home</a>
-        <a href="giohang.php"><i class="fa-solid fa-cart-shopping"></i> Giỏ hàng</a>
-        <a href="lichsudonhang.php">Lịch sử đơn hàng</a>
-        <a href="about.php">About</a>
+        <a href=""><i class="fa-solid fa-cart-shopping"></i> Giỏ hàng</a>
+        <a href="">Lịch sử đơn hàng</a>
+        <a href="">About</a>
         <a href="dangnhap.php"><i class="fa-solid fa-user"></i> Đăng nhập</a>
     </nav>
 </header>
-
 <div class="login-wrap">
     <div class="login-container">
       <h2 class="title">Đăng nhập</h2>
+      <?php if ($thong_bao != "") { ?>
+        <p style="color:red; font-size:17px; margin-bottom:10px;">
+            <?php echo $thong_bao; ?>
+        </p>
+      <?php } ?>
+      <?php if ($success != "") { ?>
+        <p style="color:green; font-size:17px; margin-bottom:10px;">
+            <?php echo $success; ?>
+        </p>
+      <?php } ?>
 
       <form class="login-form" method="post" action="">
         <label for="username">Tên đăng nhập</label>
@@ -53,7 +75,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
       </form>
     </div>
 </div>
-
 <footer class="footer">
     <ul class="info">
       <h4>HỘ KINH DOANH MIUSA</h4>
