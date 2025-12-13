@@ -19,6 +19,7 @@ body {
   background: linear-gradient(90deg, #e0ddd9, #706457);
 }
 
+
 .logo {
   font-size: 65px;
   font-family: "Josefin Sans", sans-serif;
@@ -159,6 +160,10 @@ a {
   width: 40px;
   height: 40px;
 }
+
+
+
+
 @media (max-width: 600px) {
   .header {
     flex-direction: column;

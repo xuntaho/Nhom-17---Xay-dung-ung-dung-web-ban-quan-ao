@@ -9,9 +9,7 @@ if (!isset($_GET["id"]) || !is_numeric($_GET["id"])) {
 
 $id = (int)$_GET["id"];
 
-/* ------------------------
-    LẤY THÔNG TIN SẢN PHẨM
-------------------------- */
+
 $sql = "SELECT * FROM san_pham WHERE id_san_pham = ?";
 $stmt = mysqli_prepare($conn, $sql);
 mysqli_stmt_bind_param($stmt, "i", $id);
@@ -24,9 +22,7 @@ if (!$sp) {
     exit;
 }
 
-/* ------------------------
-    LẤY SIZE CÒN HÀNG
-------------------------- */
+
 $sql_size = "SELECT kc.id_kich_co, kc.ten_kich_co
              FROM san_pham_kich_co spkc
              INNER JOIN kich_co kc ON kc.id_kich_co = spkc.id_kich_co

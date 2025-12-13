@@ -2,17 +2,11 @@
 session_start();
 include "../config/database.php";
 
-/* =================================
-   KHỞI TẠO GIỎ HÀNG
-================================= */
 if (!isset($_SESSION['gio_hang'])) {
     $_SESSION['gio_hang'] = [];
 }
 
-/* =================================
-   1️⃣ ADD SAU KHI LOGIN (QUAN TRỌNG NHẤT)
-   → PHẢI ĐẶT TRƯỚC MỌI LOGIC KHÁC
-================================= */
+
 if (
     isset($_SESSION['id_nguoi_dung']) &&
     isset($_SESSION['pending_add_to_cart'])
@@ -34,16 +28,14 @@ if (
         }
     }
 
-    // ❗ PHẢI XÓA – nếu không sẽ add lặp
+
     unset($_SESSION['pending_add_to_cart']);
 
     header("Location: giohang.php");
     exit;
 }
 
-/* =================================
-   2️⃣ THÊM VÀO GIỎ (KHI BẤM NÚT)
-================================= */
+
 if (isset($_GET['add'])) {
 
     $id_sp   = (int)$_GET['add'];
@@ -83,18 +75,14 @@ if (isset($_GET['add'])) {
     exit;
 }
 
-/* =================================
-   3️⃣ XÓA SẢN PHẨM
-================================= */
+
 if (isset($_GET['xoa'])) {
     unset($_SESSION['gio_hang'][$_GET['xoa']]);
     header("Location: giohang.php");
     exit;
 }
 
-/* =================================
-   4️⃣ CẬP NHẬT SIZE / SỐ LƯỢNG
-================================= */
+
 if (isset($_POST['update'])) {
 
     $old_key  = $_POST['update'];
@@ -124,6 +112,7 @@ if (isset($_POST['update'])) {
 <meta charset="UTF-8">
 <title>Giỏ hàng - MIUSA</title>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<link href="https://fonts.googleapis.com/css2?family=Josefin+Sans:wght@400;700&family=Istok+Web:wght@400;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="../style/css.css">
 </head>
 
@@ -224,6 +213,32 @@ $tong_tien += $thanh_tien;
 
 <?php endif; ?>
 </div>
+<footer class="footer">
+    <ul class="info">
+        <h4 style="font-weight: bold;">HỘ KINH DOANH MIUSA</h4>
+    </ul>
 
+    <ul class="info">
+        <h4 style="font-weight: bold;">LIÊN KẾT</h4>
+        <li>Chính sách bảo mật</li>
+        <li>Hướng dẫn mua hàng</li>
+        <li>Chính sách đổi trả</li>
+        <li>Hướng dẫn thanh toán</li>
+        <li>Chính sách vận chuyển</li>
+        <li>Chính sách kiểm hàng</li>
+    </ul>
+
+    <ul class="info">
+        <h4 style="font-weight: bold;">LIÊN HỆ</h4>
+        <li><i class="fa fa-phone"></i> 0909090909</li>
+        <li><i class="fa fa-location-arrow"></i> 180 Cao Lỗ, P. Chánh Hưng, TPHCM</li>
+    </ul>
+
+    <ul class="info">
+        <h4 style="font-weight: bold;">FANPAGE</h4>
+        <li><img src="../images/fb.png" class="anh"></li>
+        <li><img src="../images/instagram.png" class="anh"></li>
+    </ul>
+</footer>
 </body>
 </html>
