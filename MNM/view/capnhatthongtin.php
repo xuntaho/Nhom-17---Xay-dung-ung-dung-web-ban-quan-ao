@@ -79,7 +79,7 @@ if (isset($_POST['btn_update'])) {
 .btn-save {
     width: 100%;
     padding: 12px;
-    background: #5b3920;
+    background: #413324;
     color: white;
     border: none;
     border-radius: 12px;

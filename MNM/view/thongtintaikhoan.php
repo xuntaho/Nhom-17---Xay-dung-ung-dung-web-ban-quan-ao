@@ -89,7 +89,6 @@ if (!$user) {
     <h2>Thông tin tài khoản</h2>
 
     <p class="info-line"><b>Tên đăng nhập:</b> <?= $user['ten_dang_nhap'] ?? '' ?></p>
-    <p class="info-line"><b>Email:</b> <?= $user['email'] ?? 'Chưa cập nhật' ?></p>
     <p class="info-line"><b>Số điện thoại:</b> <?= $user['so_dien_thoai'] ?? 'Chưa cập nhật' ?></p>
     <p class="info-line"><b>Địa chỉ:</b> <?= $user['dia_chi'] ?? 'Chưa cập nhật' ?></p>
 
