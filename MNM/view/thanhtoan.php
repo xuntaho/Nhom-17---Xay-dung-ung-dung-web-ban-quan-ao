@@ -1,5 +1,6 @@
 <?php
 session_start();
+include "../config/database.php";
 
 $tong_tien = 0;
 
@@ -11,6 +12,7 @@ if (!empty($_SESSION['gio_hang'])) {
 } else {
     $tong_tien = 300000; // demo
 }
+
 ?>
 <!DOCTYPE html>
 <html lang="vi">
@@ -110,43 +112,49 @@ if (!empty($_SESSION['gio_hang'])) {
 
     <h2>Thông tin thanh toán</h2>
 
-    <form onsubmit="return checkPay();">
+    <form action="xulythanhtoan.php" method="post" onsubmit="return checkPay();">
 
-        <label>Họ tên</label>
-        <input type="text" required>
+    <label>Họ tên</label>
+    <input type="text" name="ho_ten" required>
 
-        <label>Số điện thoại</label>
-        <input type="text" required>
+    <label>Số điện thoại</label>
+    <input type="text" name="so_dien_thoai_nhan" required>
 
-        <label>Địa chỉ nhận hàng</label>
-        <input type="text" required>
+    <label>Địa chỉ nhận hàng</label>
+    <input type="text" name="dia_chi_nhan" required>
 
-        <label>Phương thức thanh toán</label>
-        <select id="phuong_thuc" onchange="toggleBank();" required>
-            <option value="">-- Chọn phương thức --</option>
-            <option value="COD">Thanh toán khi nhận hàng</option>
-            <option value="Bank">Chuyển khoản</option>
+    <label>Phương thức thanh toán</label>
+    <select name="phuong_thuc" id="phuong_thuc" onchange="toggleBank();" required>
+        <option value="">-- Chọn phương thức --</option>
+        <option value="COD">Thanh toán khi nhận hàng</option>
+        <option value="Bank">Chuyển khoản</option>
+    </select>
+
+    <div id="bank_box" style="display:none;">
+        <label>Ngân hàng</label>
+        <select name="ten_ngan_hang" id="ten_ngan_hang">
+            <option value="">-- Chọn ngân hàng --</option>
+            <option>Vietcombank</option>
+            <option>MBBank</option>
+            <option>Techcombank</option>
+            <option>ACB</option>
         </select>
 
-        <div id="bank_box" style="display:none;">
-            <label>Ngân hàng</label>
-            <select id="ten_ngan_hang">
-                <option value="">-- Chọn ngân hàng --</option>
-                <option>Vietcombank</option>
-                <option>MBBank</option>
-                <option>Techcombank</option>
-                <option>ACB</option>
-            </select>
+        <label>Số tài khoản</label>
+        <input type="text" name="so_tai_khoan" id="so_tai_khoan">
+    </div>
 
-            <label>Số tài khoản</label>
-            <input type="text" id="so_tai_khoan">
-        </div>
+    <label>Ghi chú</label>
+    <textarea name="ghi_chu"></textarea>
 
-        <label>Ghi chú</label>
-        <textarea></textarea>
+    <!-- ✅ DÒNG QUAN TRỌNG -->
+    <input type="hidden" name="tong_tien" value="<?= $tong_tien ?>">
 
-        <button class="btn-submit">Xác nhận đặt hàng</button>
-    </form>
+    <button type="submit" name="btn_thanhtoan" class="btn-submit">
+        Xác nhận đặt hàng
+    </button>
+</form>
+
 </div>
 
 <footer class="footer">

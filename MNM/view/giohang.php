@@ -1,88 +1,70 @@
 <?php
 session_start();
-include "../config/database.php";
+include __DIR__ . "/../config/database.php";
 
+/* ================== KHỞI TẠO GIỎ ================== */
 if (!isset($_SESSION['gio_hang'])) {
     $_SESSION['gio_hang'] = [];
 }
 
-
-if (
-    isset($_SESSION['id_nguoi_dung']) &&
-    isset($_SESSION['pending_add_to_cart'])
-) {
-    $p = $_SESSION['pending_add_to_cart'];
-
-    if ($p['id_sp'] > 0 && $p['id_size'] > 0) {
-
-        $key = $p['id_sp'] . "-" . $p['id_size'];
-
-        if (!isset($_SESSION['gio_hang'][$key])) {
-            $_SESSION['gio_hang'][$key] = [
-                'id_san_pham' => $p['id_sp'],
-                'id_kich_co'  => $p['id_size'],
-                'so_luong'    => $p['soluong']
-            ];
-        } else {
-            $_SESSION['gio_hang'][$key]['so_luong'] += $p['soluong'];
-        }
-    }
-
-
-    unset($_SESSION['pending_add_to_cart']);
-
-    header("Location: giohang.php");
-    exit;
-}
-
-
+/* ================== THÊM VÀO GIỎ ================== */
 if (isset($_GET['add'])) {
 
     $id_sp   = (int)$_GET['add'];
-    $id_size = (int)$_GET['size'];
-    $qty     = max(1, (int)$_GET['soluong']);
+    $id_size = (int)($_GET['size'] ?? 0);
+    $qty     = max(1, (int)($_GET['soluong'] ?? 1));
 
-    // Chưa đăng nhập → lưu tạm
+    /* Chưa đăng nhập → yêu cầu login */
     if (!isset($_SESSION['id_nguoi_dung'])) {
-
         $_SESSION['pending_add_to_cart'] = [
             'id_sp'   => $id_sp,
             'id_size' => $id_size,
             'soluong' => $qty
         ];
-
         header("Location: dangnhap.php?msg=login-required");
         exit;
     }
 
-    // Đã login → add trực tiếp
-    if ($id_sp > 0 && $id_size > 0) {
+    /* Kiểm tra tồn kho */
+    $q = mysqli_query(
+        $conn,
+        "SELECT so_luong 
+         FROM san_pham_kich_co
+         WHERE id_san_pham = $id_sp
+           AND id_kich_co = $id_size"
+    );
+    $row = mysqli_fetch_assoc($q);
+    $ton_kho = $row['so_luong'] ?? 0;
 
-        $key = $id_sp . "-" . $id_size;
+    if ($qty > $ton_kho) {
+        header("Location: chitiet.php?id=$id_sp&err=het-hang");
+        exit;
+    }
 
-        if (!isset($_SESSION['gio_hang'][$key])) {
-            $_SESSION['gio_hang'][$key] = [
-                'id_san_pham' => $id_sp,
-                'id_kich_co'  => $id_size,
-                'so_luong'    => $qty
-            ];
-        } else {
-            $_SESSION['gio_hang'][$key]['so_luong'] += $qty;
-        }
+    $key = $id_sp . "-" . $id_size;
+
+    if (!isset($_SESSION['gio_hang'][$key])) {
+        $_SESSION['gio_hang'][$key] = [
+            'id_san_pham' => $id_sp,
+            'id_kich_co'  => $id_size,
+            'so_luong'    => $qty
+        ];
+    } else {
+        $_SESSION['gio_hang'][$key]['so_luong'] += $qty;
     }
 
     header("Location: giohang.php");
     exit;
 }
 
-
+/* ================== XÓA KHỎI GIỎ ================== */
 if (isset($_GET['xoa'])) {
     unset($_SESSION['gio_hang'][$_GET['xoa']]);
     header("Location: giohang.php");
     exit;
 }
 
-
+/* ================== CẬP NHẬT GIỎ ================== */
 if (isset($_POST['update'])) {
 
     $old_key  = $_POST['update'];
@@ -91,6 +73,22 @@ if (isset($_POST['update'])) {
 
     list($id_sp, $old_size) = explode("-", $old_key);
     $new_key = $id_sp . "-" . $new_size;
+
+    /* Kiểm tra tồn kho */
+    $q = mysqli_query(
+        $conn,
+        "SELECT so_luong 
+         FROM san_pham_kich_co
+         WHERE id_san_pham = $id_sp
+           AND id_kich_co = $new_size"
+    );
+    $row = mysqli_fetch_assoc($q);
+    $ton_kho = $row['so_luong'] ?? 0;
+
+    if ($new_qty > $ton_kho) {
+        header("Location: giohang.php?err=het-hang");
+        exit;
+    }
 
     $_SESSION['gio_hang'][$new_key] = [
         'id_san_pham' => $id_sp,
@@ -105,137 +103,102 @@ if (isset($_POST['update'])) {
     header("Location: giohang.php");
     exit;
 }
+
+/* ================== HÀM ESCAPE ================== */
+function e($v) {
+    return htmlspecialchars($v, ENT_QUOTES, "UTF-8");
+}
 ?>
 <!DOCTYPE html>
 <html lang="vi">
 <head>
-<meta charset="UTF-8">
-<title>Giỏ hàng - MIUSA</title>
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-<link href="https://fonts.googleapis.com/css2?family=Josefin+Sans:wght@400;700&family=Istok+Web:wght@400;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="../style/css.css">
+    <meta charset="UTF-8">
+    <title>Giỏ hàng - MIUSA</title>
+    <link rel="stylesheet" href="../style/css.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 </head>
 
-<body class="body">
+<body>
 
 <header class="header">
     <div class="logo">MIU<span>SA</span></div>
     <nav class="menu">
         <?php include "timkiem.php"; ?>
-        <a href="index.php"><i class="fa fa-home"></i> Home</a>
-        <a href="giohang.php"><i class="fa-solid fa-cart-shopping"></i> Giỏ hàng</a>
-        <a href="#">Lịch sử đơn hàng</a>
-        <a href="#">About</a>
-
-        <?php if (!isset($_SESSION['id_nguoi_dung'])) { ?>
-            <a href="dangnhap.php"><i class="fa-solid fa-user"></i> Đăng nhập</a>
-        <?php } else { ?>
-            <span>Chào <?= $_SESSION['ten_dang_nhap'] ?></span>
-        <?php } ?>
+        <a href="index.php">Home</a>
+        <a href="giohang.php">Giỏ hàng</a>
+        <a href="about.php">About</a>
     </nav>
 </header>
 
-<div class="cart-wrapper">
-<h1 class="cart-title">Giỏ hàng của bạn</h1>
+<h1 style="text-align:center;margin:20px 0;">GIỎ HÀNG</h1>
 
 <?php if (empty($_SESSION['gio_hang'])): ?>
-
-    <p>Giỏ hàng đang trống.</p>
-    <a href="index.php" class="btn-pay">Tiếp tục mua</a>
-
+    <p style="text-align:center;">Giỏ hàng trống</p>
 <?php else: ?>
 
+<table class="cart-table">
+    <tr>
+        <th>Sản phẩm</th>
+        <th>Size</th>
+        <th>Số lượng</th>
+        <th>Giá</th>
+        <th>Tạm tính</th>
+        <th></th>
+    </tr>
+
 <?php
-$tong_tien = 0;
+$tong = 0;
 foreach ($_SESSION['gio_hang'] as $key => $item):
 
-$id_sp   = $item['id_san_pham'];
-$id_size = $item['id_kich_co'];
+    $id_sp   = $item['id_san_pham'];
+    $id_size = $item['id_kich_co'];
 
-$sql = "
-SELECT sp.ten_san_pham, sp.gia, sp.hinh_anh, kc.ten_kich_co
-FROM san_pham sp
-JOIN kich_co kc ON kc.id_kich_co = $id_size
-WHERE sp.id_san_pham = $id_sp
-";
-$rs = mysqli_query($conn, $sql);
-$row = mysqli_fetch_assoc($rs);
+    $sql = "
+        SELECT sp.ten_san_pham, sp.gia, sp.hinh_anh, kc.ten_kich_co
+        FROM san_pham sp
+        JOIN kich_co kc ON kc.id_kich_co = $id_size
+        WHERE sp.id_san_pham = $id_sp
+    ";
+    $rs = mysqli_query($conn, $sql);
+    $row = mysqli_fetch_assoc($rs);
 
-$thanh_tien = $row['gia'] * $item['so_luong'];
-$tong_tien += $thanh_tien;
+    $tien = $row['gia'] * $item['so_luong'];
+    $tong += $tien;
 ?>
-
-<div class="cart-item">
-    <img src="../images/<?= $row['hinh_anh'] ?>">
-    <div class="cart-info">
-        <h3><?= $row['ten_san_pham'] ?></h3>
-
-        <form method="post">
-            <input type="hidden" name="update" value="<?= $key ?>">
-
-            <p>Size:
-                <select name="size">
-                    <?php
-                    $sizes = mysqli_query($conn, "SELECT * FROM kich_co");
-                    while ($s = mysqli_fetch_assoc($sizes)): ?>
-                        <option value="<?= $s['id_kich_co'] ?>"
-                            <?= ($s['id_kich_co'] == $id_size) ? "selected" : "" ?>>
-                            <?= $s['ten_kich_co'] ?>
-                        </option>
-                    <?php endwhile; ?>
-                </select>
-            </p>
-
-            <p>Số lượng:
-                <input type="number" min="1" name="soluong" value="<?= $item['so_luong'] ?>">
-            </p>
-
-            <button class="btn-add">Cập nhật</button>
+<tr>
+    <td>
+        <img src="../images/<?= e($row['hinh_anh']) ?>" width="80"><br>
+        <?= e($row['ten_san_pham']) ?>
+    </td>
+    <td><?= e($row['ten_kich_co']) ?></td>
+    <td>
+        <form method="post" style="display:inline;">
+            <input type="hidden" name="update" value="<?= e($key) ?>">
+            <input type="number" name="soluong" value="<?= $item['so_luong'] ?>" min="1">
+            <input type="hidden" name="size" value="<?= $id_size ?>">
+            <button>Cập nhật</button>
         </form>
-
-        <p>Giá: <b><?= number_format($row['gia']) ?>đ</b></p>
-        <p>Thành tiền: <b><?= number_format($thanh_tien) ?>đ</b></p>
-
-        <a href="giohang.php?xoa=<?= $key ?>" class="btn-remove">Xóa</a>
-    </div>
-</div>
-
+    </td>
+    <td><?= number_format($row['gia']) ?>đ</td>
+    <td><?= number_format($tien) ?>đ</td>
+    <td>
+        <a onclick="return confirm('Xóa sản phẩm?')"
+           href="giohang.php?xoa=<?= e($key) ?>">❌</a>
+    </td>
+</tr>
 <?php endforeach; ?>
 
-<div class="cart-total">
-    Tổng cộng: <?= number_format($tong_tien) ?>đ
-</div>
+<tr>
+    <td colspan="4"><b>TỔNG TIỀN</b></td>
+    <td colspan="2"><b><?= number_format($tong) ?>đ</b></td>
+</tr>
+</table>
 
-<a href="thanhtoan.php" class="btn-pay">Đi đến thanh toán</a>
+<div style="text-align:center;margin:20px;">
+    <a href="thanhtoan.php" class="btn-add">Thanh toán</a>
+</div>
 
 <?php endif; ?>
-</div>
-<footer class="footer">
-    <ul class="info">
-        <h4 style="font-weight: bold;">HỘ KINH DOANH MIUSA</h4>
-    </ul>
 
-    <ul class="info">
-        <h4 style="font-weight: bold;">LIÊN KẾT</h4>
-        <li>Chính sách bảo mật</li>
-        <li>Hướng dẫn mua hàng</li>
-        <li>Chính sách đổi trả</li>
-        <li>Hướng dẫn thanh toán</li>
-        <li>Chính sách vận chuyển</li>
-        <li>Chính sách kiểm hàng</li>
-    </ul>
-
-    <ul class="info">
-        <h4 style="font-weight: bold;">LIÊN HỆ</h4>
-        <li><i class="fa fa-phone"></i> 0909090909</li>
-        <li><i class="fa fa-location-arrow"></i> 180 Cao Lỗ, P. Chánh Hưng, TPHCM</li>
-    </ul>
-
-    <ul class="info">
-        <h4 style="font-weight: bold;">FANPAGE</h4>
-        <li><img src="../images/fb.png" class="anh"></li>
-        <li><img src="../images/instagram.png" class="anh"></li>
-    </ul>
-</footer>
 </body>
 </html>

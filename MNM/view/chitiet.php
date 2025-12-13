@@ -100,23 +100,39 @@ function e($v) {
             <input type="hidden" name="add" value="<?php echo $id; ?>">
 
             <label><b>Chọn size:</b></label><br>
-            <select name="size" id="size" class="select-size">
-                <option value="">-- Chọn size --</option>
+            <select name="size" id="size" class="select-size" onchange="updateKho()">
+    <option value="">-- Chọn size --</option>
 
-                <?php while ($row = mysqli_fetch_assoc($res_size)) { ?>
-                    <option value="<?php echo $row["id_kich_co"]; ?>">
-                        <?php echo e($row["ten_kich_co"]); ?>
-                    </option>
-                <?php } ?>
+    <?php
+    mysqli_data_seek($res_size, 0);
+    while ($row = mysqli_fetch_assoc($res_size)) {
 
-            </select>
+        // lấy tồn kho cho size
+        $qk = mysqli_query(
+            $conn,
+            "SELECT so_luong 
+             FROM san_pham_kich_co
+             WHERE id_san_pham = $id
+               AND id_kich_co = {$row['id_kich_co']}"
+        );
+        $k = mysqli_fetch_assoc($qk);
+        $ton_kho = $k['so_luong'] ?? 0;
+    ?>
+        <option value="<?= $row['id_kich_co'] ?>"
+                data-kho="<?= $ton_kho ?>">
+            <?= e($row['ten_kich_co']) ?>
+        </option>
+    <?php } ?>
+</select>
+
 
             <p id="err" style="color:red; font-size:14px;"></p>
 
             <br>
 
             <label><b>Số lượng:</b></label><br>
-            <input type="number" name="soluong" value="1" min="1" class="quantity">
+<input type="number" name="soluong" id="soluong" value="1" min="1" class="quantity">
+<p id="err" style="color:red;font-size:14px;"></p>
 
             <br><br>
 
@@ -156,12 +172,28 @@ function e($v) {
 </footer>
 
 <script>
+let tonKho = 0;
+
+function updateKho() {
+    const select = document.getElementById("size");
+    const opt = select.options[select.selectedIndex];
+    tonKho = parseInt(opt.getAttribute("data-kho")) || 0;
+
+    document.getElementById("soluong").max = tonKho;
+}
+
 function kiemTra() {
-    let size = document.getElementById("size").value;
-    let err = document.getElementById("err");
+    const size = document.getElementById("size").value;
+    const qty  = parseInt(document.getElementById("soluong").value);
+    const err  = document.getElementById("err");
 
     if (size === "") {
         err.innerHTML = "Vui lòng chọn size!";
+        return false;
+    }
+
+    if (qty > tonKho) {
+        err.innerHTML = "Số lượng vượt quá tồn kho (còn " + tonKho + ")";
         return false;
     }
 
@@ -169,6 +201,7 @@ function kiemTra() {
     return true;
 }
 </script>
+
 
 </body>
 </html>
