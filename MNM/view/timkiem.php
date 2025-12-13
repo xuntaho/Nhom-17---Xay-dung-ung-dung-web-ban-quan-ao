@@ -1,5 +1,5 @@
 <div class="search-box">
-    <input id="searchInput" type="text" placeholder="Tìm kiếm..." class="search"
+    <input id="searchInput" type="text" placeholder="Tìm sản phẩm..." class="search"
            value="<?= isset($_GET['search']) ? htmlspecialchars($_GET['search']) : '' ?>">
 
     <i class="fa fa-search search-icon" onclick="doSearch()"></i>
