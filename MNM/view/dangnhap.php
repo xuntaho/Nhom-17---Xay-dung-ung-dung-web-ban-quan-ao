@@ -12,7 +12,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $sql = "SELECT * FROM nguoi_dung 
             WHERE ten_dang_nhap = '$ten' 
               AND mat_khau = '$mk'";
-
     $rs = mysqli_query($conn, $sql);
 
     if (mysqli_num_rows($rs) == 1) {
