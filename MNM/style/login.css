@@ -108,6 +108,11 @@ body {
   transition: 0.2s;
 }
 
+a {
+  text-decoration: none;
+  color: inherit;
+}
+
 .login-form input:focus {
   border-color: #5b3920;
   box-shadow: 0 0 4px rgba(91,57,32,0.4);
