@@ -13,20 +13,19 @@ $user = mysqli_fetch_assoc(mysqli_query($conn, $sql));
 $thongbao = "";
 if (isset($_POST['btn_update'])) {
 
-    $ho_ten  = $_POST['ho_ten'];
+    $ten_dang_nhap  = $_POST['ten_dang_nhap'];
     $so_dt   = $_POST['so_dien_thoai'];
     $dia_chi = $_POST['dia_chi'];
 
     $update = "UPDATE nguoi_dung SET 
-                ho_ten = '$ho_ten',
+                ten_dang_nhap- = '$ten_dang_nhap'
                 so_dien_thoai = '$so_dt',
                 dia_chi = '$dia_chi'
                WHERE id_nguoi_dung = $id";
 
     mysqli_query($conn, $update);
-
+    $_SESSION['ten_dang_nhap'] = $ten_dang_nhap;
     $thongbao = "Cập nhật thông tin thành công!";
-
     $user = mysqli_fetch_assoc(mysqli_query($conn, $sql));
 }
 ?>
@@ -44,8 +43,8 @@ if (isset($_POST['btn_update'])) {
 <style>
 .container {
     width: 40%;
-    background: #f5eee9;
-    margin: 140px auto 50px;
+    background: #d1cac3;
+    margin: 100px auto 100px;
     padding: 30px;
     border-radius: 18px;
     box-shadow: 0 4px 12px rgba(0,0,0,0.2);
@@ -122,8 +121,8 @@ if (isset($_POST['btn_update'])) {
     <form method="post">
 
         <div class="input-box">
-            <label>Họ tên</label>
-            <input type="text" name="ho_ten" value="<?= $user['ho_ten']; ?>" required>
+            <label>Tên đăng nhập</label>
+            <input type="text" name="ten_dang_nhap" value="<?= $user['ten_dang_nhap']; ?>" required>
         </div>
 
         <div class="input-box">
