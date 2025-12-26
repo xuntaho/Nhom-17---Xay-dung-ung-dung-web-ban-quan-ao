@@ -2,61 +2,62 @@
 <html lang="vi">
 <head>
 <meta charset="UTF-8">
-<title>Lịch sử đơn hàng</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Đặt hàng thành công - MIUSA</title>
 
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 <link href="https://fonts.googleapis.com/css2?family=Josefin+Sans:wght@400;700&family=Istok+Web:wght@400;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&display=swap">
 <link rel="stylesheet" href="../style/css.css">
 
 <style>
-.page-wrapper {
-    width: 80%;
-    margin: 160px auto 50px;
+.success-wrapper {
+    margin-top: 180px;
+    display: flex;
+    justify-content: center;
+    margin-bottom: 180px;
+}
+
+.success-box {
+    width: 50%;
+    background: #f5eee9;
+    padding: 40px;
+    border-radius: 20px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.2);
     text-align: center;
 }
 
-.order-table {
-    width: 100%;
-    border-collapse: collapse;
-    background: #f5eee9;
-    border-radius: 15px;
-    overflow: hidden;
-    font-size: 20px;
-}
-
-.order-table th {
-    background: #5b3920;
-    color: white;
-    padding: 15px;
-    font-size: 22px;
-}
-
-.order-table td {
-    padding: 15px;
-    border-bottom: 1px solid #c8bfb8;
+.success-box h1 {
+    font-size: 42px;
     color: #5b3920;
+    margin-bottom: 10px;
 }
 
-.order-table tr:last-child td {
-    border-bottom: none;
+.success-box p {
+    font-size: 20px;
+    color: #4a3b2f;
+    margin: 6px 0;
 }
 
-.btn-back {
-    margin-top: 25px;
+.btn {
     display: inline-block;
-    padding: 15px 30px;
+    margin-top: 20px;
+    padding: 12px 28px;
     background: #5b3920;
     color: white;
     border-radius: 10px;
-    font-size: 22px;
     text-decoration: none;
+    font-size: 20px;
 }
-.btn-back:hover { background:#7b573b; }
+
+.btn:hover {
+    background: #7b573b;
+}
 </style>
 </head>
 
 <body class="body">
+
+<!-- HEADER ĐỒNG BỘ -->
 <header class="header">
     <div class="logo">MIU<span>SA</span></div>
     <nav class="menu">
@@ -64,56 +65,38 @@
             <input type="text" class="search" placeholder="Tìm sản phẩm...">
             <i class="fa fa-search search-icon"></i>
         </div>
+
+
         <a href="index.php"><i class="fa fa-home"></i> Home</a>
         <a href="giohang.php"><i class="fa-solid fa-cart-shopping"></i> Giỏ hàng</a>
-        <a href="lichsudonhang.php">Lịch sử đơn hàng</a>
+        <a href="lichsu.php">Lịch sử đơn hàng</a>
         <a href="about.php">About</a>
         <a href="dangnhap.php"><i class="fa-solid fa-user"></i> Đăng nhập</a>
     </nav>
 </header>
 
-<div class="page-wrapper">
-    <h1 style="font-size:38px; color:#5b3920; margin-bottom:20px;">
-        Lịch sử đơn hàng
-    </h1>
+<!-- SUCCESS -->
+<div class="success-wrapper">
+    <div class="success-box">
+        <div style="font-size:70px;color:#5b3920;">✔</div>
+        <h1>Đặt hàng thành công!</h1>
+        <p>Cảm ơn bạn đã mua hàng tại <b>MIUSA</b></p>
 
-    <table class="order-table">
-        <tr>
-            <th>Mã đơn</th>
-            <th>Ngày đặt</th>
-            <th>Tổng tiền</th>
-            <th>Trạng thái</th>
-        </tr>
+        <p>Phương thức thanh toán: <b>Chuyển khoản</b></p>
+        <p>Ngân hàng: <b>Vietcombank</b></p>
+        <p>Số tài khoản: <b>0123456789</b></p>
 
-        
-        <tr>
-            <td>DH001</td>
-            <td>12/05/2025</td>
-            <td>1.250.000đ</td>
-            <td>Đã giao</td>
-        </tr>
-
-        <tr>
-            <td>DH002</td>
-            <td>20/05/2025</td>
-            <td>890.000đ</td>
-            <td>Đang giao</td>
-        </tr>
-
-        <tr>
-            <td>DH003</td>
-            <td>01/06/2025</td>
-            <td>2.100.000đ</td>
-            <td>Chờ xác nhận</td>
-        </tr>
-    </table>
-
-    <a href="index.php" class="btn-back">Tiếp tục mua sắm</a>
+        <a href="index.php" class="btn">Về trang chủ</a>
+        <a href="#" class="btn" style="background:#7b573b;">
+            Xem đơn hàng
+        </a>
+    </div>
 </div>
 
+<!-- FOOTER -->
 <footer class="footer">
     <ul class="info">
-      <h4>HỘ KINH DOANH MIUSA </h4>
+      <h4>HỘ KINH DOANH MIUSA</h4>
     </ul>
 
     <ul class="info">
@@ -134,7 +117,11 @@
 
     <ul class="info">
       <h4>FANPAGE</h4>
-      <li><img src="../images/fb.png" class="anh"></li>
+      <li>
+        <a href="https://www.facebook.com/share/1GQMPBSu9z/?mibextid=wwXIfr" target="_blank">
+            <img src="../images/fb.png" class="anh">
+        </a>
+      </li>
       <li><img src="../images/instagram.png" class="anh"></li>
     </ul>
 </footer>
