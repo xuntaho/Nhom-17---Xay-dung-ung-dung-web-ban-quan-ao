@@ -18,11 +18,11 @@
             <input type="text" class="search" placeholder="Tìm sản phẩm...">
             <i class="fa fa-search search-icon"></i>
         </div>
-        <a href="index.html"><i class="fa fa-home"></i> Home</a>
-        <a href=""><i class="fa-solid fa-cart-shopping"></i> Giỏ hàng</a>
-        <a href="">Lịch sử đơn hàng</a>
-        <a href="">About</a>
-        <a href="dangnhap.html"><i class="fa-solid fa-user"></i> Đăng nhập</a>
+        <a href="index.php"><i class="fa fa-home"></i> Home</a>
+        <a href="giohang.php"><i class="fa-solid fa-cart-shopping"></i> Giỏ hàng</a>
+        <a href="lichsudonhang.php">Lịch sử đơn hàng</a>
+        <a href="about.php">About</a>
+        <a href="dangnhap.php"><i class="fa-solid fa-user"></i> Đăng nhập</a>
     </nav>
 </header>
 <div class="login-wrap">
