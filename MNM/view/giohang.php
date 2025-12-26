@@ -164,7 +164,7 @@
 
 <div class="cart-total">Tổng cộng: 1.000.000đ</div>
 
-<a href="#" class="btn-pay">Đi đến thanh toán</a>
+<a href="thanhtoan.php" class="btn-pay">Đi đến thanh toán</a>
 
 </div>
 
