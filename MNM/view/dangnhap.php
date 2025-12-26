@@ -40,7 +40,7 @@
 
             <button type="submit" class="btn-login">Đăng nhập</button>
 
-            <p class="signup">Chưa có tài khoản? <a href="dangky.html">Đăng ký ngay</a></p>
+            <p class="signup">Chưa có tài khoản? <a href="dangky.php">Đăng ký ngay</a></p>
         </form>
     </div>
 </div>
