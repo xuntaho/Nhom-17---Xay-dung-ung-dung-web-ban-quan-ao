@@ -1,11 +1,16 @@
+<?php
+session_start();
+include "../config/database.php";
+?>
 <!DOCTYPE html>
 <html lang="vi">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>MIUSA - Frontend</title>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-  <link href="https://fonts.googleapis.com/css2?family=Josefin+Sans:wght@400;700&family=Istok+Web:wght@400;700&display=swap" rel="stylesheet">
+  <title>MIUSA</title>
+
+  <link rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
   <link rel="stylesheet" href="../style/css.css">
 </head>
 
@@ -24,81 +29,41 @@
         <a href="dangnhap.php"><i class="fa-solid fa-user"></i> Đăng nhập</a>
     </nav>
 </header>
-<div class="banner">
-  <img src="../images/z7280374913426_f2722e5f205dd34472c815d6aecf61f6.jpg" alt="banner">
-</div>
+
 <div class="content">
-    <div class="product-container" id="products">
-        <div class="product-card">
-            <a href="#">
-                <img src="../images/sweeter.jpeg" alt="Sản phẩm 1">
-                Sản phẩm 1
-                <p class="price">120.000đ</p>
-            </a>
-        </div>
-        <div class="product-card">
-            <a href="#">
-                <img src="../images/hoodie.jpg" alt="Sản phẩm 1">
-                Sản phẩm 1
-                <p class="price">120.000đ</p>
-            </a>
-        </div>
-        <div class="product-card">
-            <a href="#">
-                <img src="../images/hoodiezip.jpg" alt="Sản phẩm 1">
-                Sản phẩm 1
-                <p class="price">120.000đ</p>
-            </a>
-        </div>
-        <div class="product-card">
-            <a href="#">
-                <img src="../images/quankaki.jpg" alt="Sản phẩm 1">
-                Sản phẩm 1
-                <p class="price">120.000đ</p>
-            </a>
-        </div>
-        <div class="product-card">
-            <a href="#">
-                <img src="../images/quangrey.jpg" alt="Sản phẩm 1">
-                Sản phẩm 1
-                <p class="price">120.000đ</p>
-            </a>
-        </div>
-        <div class="product-card">
-            <a href="#">
-                <img src="../images/vay.png" alt="Sản phẩm 1">
-                Sản phẩm 1
-                <p class="price">120.000đ</p>
-            </a>
-        </div>
-        <div class="product-card">
-            <a href="#">
-                <img src="../images/ryokotee.jpg" alt="Sản phẩm 2">
-                Sản phẩm 2
-                <p class="price">250.000đ</p>
-            </a>
-        </div>
+  <div class="product-container">
 
-        <div class="product-card">
-            <a href="#">
-                <img src="../images/quancagro.jpg" alt="Sản phẩm 3">
-                Sản phẩm 3
-                <p class="price">99.000đ</p>
-            </a>
-        </div>
+<?php
+$sql = "SELECT * FROM san_pham ORDER BY id_san_pham ASC";
+$result = mysqli_query($conn, $sql);
 
-        <div class="product-card">
-            <a href="#">
-                <img src="../images/quan.jpg" alt="Sản phẩm 4">
-                Sản phẩm 4
-                <p class="price">350.000đ</p>
-            </a>
-        </div>
+if ($result && mysqli_num_rows($result) > 0) {
+    while ($row = mysqli_fetch_assoc($result)) {
+?>
+
+    <div class="product-card">
+      <a href="chitiet.php ? id=<?php echo $row['id_san_pham']; ?>">
+        <img src="../images/<?php echo $row['hinh_anh']; ?>" alt="">
+        <h4><?php echo $row['ten_san_pham']; ?></h4>
+        <p class="price">
+          <?php echo number_format($row['gia'], 0, ',', '.'); ?> đ
+        </p>
+      </a>
     </div>
+
+<?php
+    }
+} else {
+    echo "<p>Không có sản phẩm nào.</p>";
+}
+?>
+
+  </div>
 </div>
+
 <footer class="footer">
     <ul class="info">
-      <h4>HỘ KINH DOANH MIUSA </h4>
+      <h4>HỘ KINH DOANH MIUSA</h4>
     </ul>
 
     <ul class="info">
@@ -123,6 +88,5 @@
       <li><img src="../images/instagram.png" class="anh"></li>
     </ul>
 </footer>
-
 </body>
 </html>
