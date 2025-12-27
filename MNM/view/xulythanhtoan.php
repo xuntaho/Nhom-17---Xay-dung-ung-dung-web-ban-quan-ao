@@ -65,8 +65,7 @@
             <input type="text" class="search" placeholder="Tìm sản phẩm...">
             <i class="fa fa-search search-icon"></i>
         </div>
-
-
+        <?php include "timkiem.php"; ?>
         <a href="index.php"><i class="fa fa-home"></i> Home</a>
         <a href="giohang.php"><i class="fa-solid fa-cart-shopping"></i> Giỏ hàng</a>
         <a href="lichsu.php">Lịch sử đơn hàng</a>

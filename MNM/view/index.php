@@ -18,10 +18,7 @@ include "../config/database.php";
 <header class="header">
     <div class="logo">MIU<span>SA</span></div>
     <nav class="menu">
-        <div class="search-box">
-            <input type="text" class="search" placeholder="Tìm sản phẩm...">
-            <i class="fa fa-search search-icon"></i>
-        </div>
+        <?php include "timkiem.php"; ?>
         <a href="index.php"><i class="fa fa-home"></i> Home</a>
         <a href="giohang.php"><i class="fa-solid fa-cart-shopping"></i> Giỏ hàng</a>
         <a href="lichsudonhang.php">Lịch sử đơn hàng</a>
@@ -50,7 +47,7 @@ if ($result && mysqli_num_rows($result) > 0) {
     while ($row = mysqli_fetch_assoc($result)) {
 ?>
 
-    <div class="product-card">
+    <div class="product-card" id="products">
       <a href="chitiet.php?id=<?php echo $row['id_san_pham']; ?>">
         <img src="../images/<?php echo $row['hinh_anh']; ?>" alt="">
         <h4><?php echo $row['ten_san_pham']; ?></h4>
