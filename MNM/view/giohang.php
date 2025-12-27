@@ -36,6 +36,7 @@ if (isset($_GET['add'])) {
     exit;
 }
 
+
 if (isset($_GET['xoa'])) {
     unset($_SESSION['gio_hang'][$_GET['xoa']]);
     header("Location: giohang.php");
