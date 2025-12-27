@@ -135,7 +135,14 @@ if (isset($_POST['add_to_cart'])) {
         <a href="giohang.php"><i class="fa-solid fa-cart-shopping"></i> Giỏ hàng</a>
         <a href="lichsudonhang.php">Lịch sử đơn hàng</a>
         <a href="about.php">About</a>
-        <a href="dangnhap.php"><i class="fa-solid fa-user"></i> Đăng nhập</a>
+        <?php if (!isset($_SESSION["id_nguoi_dung"])) { ?>
+            <a href="dangnhap.php"><i class="fa-solid fa-user"></i> Đăng nhập</a>
+        <?php } else { ?>
+            <span style="color:black;font-size:15px;">
+                Chào bạn <?php echo $_SESSION["ten_dang_nhap"]; ?>
+            </span>
+            <a href="thongtintaikhoan.php"><i class="fa-solid fa-user"></i> Tài khoản</a>
+        <?php } ?>
     </nav>
 </header>
 
