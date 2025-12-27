@@ -9,6 +9,7 @@ include "../config/database.php";
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>MIUSA</title>
 
+    <link href="https://fonts.googleapis.com/css2?family=Josefin+Sans:wght@400;700&family=Istok+Web:wght@400;700&display=swap" rel="stylesheet">
   <link rel="stylesheet"
         href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
   <link rel="stylesheet" href="../style/css.css">
@@ -26,10 +27,19 @@ include "../config/database.php";
         <a href="giohang.php"><i class="fa-solid fa-cart-shopping"></i> Giỏ hàng</a>
         <a href="lichsudonhang.php">Lịch sử đơn hàng</a>
         <a href="about.php">About</a>
-        <a href="dangnhap.php"><i class="fa-solid fa-user"></i> Đăng nhập</a>
+        <?php if (!isset($_SESSION["id_nguoi_dung"])) { ?>
+            <a href="dangnhap.php"><i class="fa-solid fa-user"></i> Đăng nhập</a>
+        <?php } else { ?>
+            <span style="color:black;font-size:15px;">
+                Chào bạn <?php echo $_SESSION["ten_dang_nhap"]; ?>
+            </span>
+            <a href="thongtintaikhoan.php"><i class="fa-solid fa-user"></i> Tài khoản</a>
+        <?php } ?>
     </nav>
 </header>
-
+<div class="banner">
+  <img src="../images/z7280374913426_f2722e5f205dd34472c815d6aecf61f6.jpg" alt="banner">
+</div>
 <div class="content">
   <div class="product-container">
 
