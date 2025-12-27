@@ -42,7 +42,7 @@ if ($result && mysqli_num_rows($result) > 0) {
 ?>
 
     <div class="product-card">
-      <a href="chitiet.php ? id=<?php echo $row['id_san_pham']; ?>">
+      <a href="chitiet.php?id=<?php echo $row['id_san_pham']; ?>">
         <img src="../images/<?php echo $row['hinh_anh']; ?>" alt="">
         <h4><?php echo $row['ten_san_pham']; ?></h4>
         <p class="price">

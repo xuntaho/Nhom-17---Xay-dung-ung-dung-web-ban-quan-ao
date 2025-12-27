@@ -50,7 +50,7 @@
 
         <a href="index.php"><i class="fa fa-home"></i> Home</a>
         <a href="giohang.php"><i class="fa-solid fa-cart-shopping"></i> Giỏ hàng</a>
-        <a href="lichsu.php">Lịch sử đơn hàng</a>
+        <a href="lichsudonhang.php">Lịch sử đơn hàng</a>
         <a href="about.php">About</a>
         <a href="dangnhap.php"><i class="fa-solid fa-user"></i> Đăng nhập</a>
     </nav>
