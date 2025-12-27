@@ -51,18 +51,34 @@ if (isset($_POST['update'])) {
 
     list($id_sp, $old_size) = explode("-", $old_key);
     $new_key = $id_sp . "-" . $new_size;
-
+    $sql = "SELECT so_luong 
+            FROM san_pham_kich_co 
+            WHERE id_san_pham = $id_sp 
+              AND id_kich_co  = $new_size";
+    $rs = mysqli_query($conn, $sql);
+    $row = mysqli_fetch_assoc($rs);
+    if (!$row) {
+        header("Location: giohang.php?err=invalid");
+        exit;
+    }
+    if ($new_qty > (int)$row['so_luong']) {
+        header("Location: giohang.php?err=out-of-stock");
+        exit;
+    }
     $_SESSION['gio_hang'][$new_key] = [
         'id_san_pham' => $id_sp,
         'id_kich_co'  => $new_size,
         'so_luong'    => $new_qty
     ];
 
-    if ($new_key != $old_key) unset($_SESSION['gio_hang'][$old_key]);
+    if ($new_key != $old_key) {
+        unset($_SESSION['gio_hang'][$old_key]);
+    }
 
-    header("Location: giohang.php");
+    header("Location: giohang.php?msg=updated");
     exit;
 }
+
 ?>
 <!DOCTYPE html>
 <html lang="vi">
@@ -189,6 +205,25 @@ border-radius: 12px;
 <div class="cart-container">
 
 <h2 class="cart-title">Giỏ hàng của bạn</h2>
+<?php
+if (isset($_GET['err'])) {
+    if ($_GET['err'] == 'out-of-stock') {
+        echo "<p style='color:red;font-weight:bold;'>
+                Số lượng vượt quá tồn kho!
+              </p>";
+    }
+    if ($_GET['err'] == 'invalid') {
+        echo "<p style='color:red;font-weight:bold;'>
+                Sản phẩm hoặc size không hợp lệ!
+              </p>";
+    }
+}
+if (isset($_GET['msg']) && $_GET['msg'] == 'updated') {
+    echo "<p style='color:green;font-weight:bold;'>
+            Cập nhật giỏ hàng thành công!
+          </p>";
+}
+?>
 
 <?php if (empty($_SESSION['gio_hang'])): ?>
 
