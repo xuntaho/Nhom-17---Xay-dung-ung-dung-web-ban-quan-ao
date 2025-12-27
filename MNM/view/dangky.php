@@ -10,6 +10,8 @@ $errors = [
     "diachi" => ""
 ];
 
+$success = "";
+
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     $ten = trim($_POST['username']);
@@ -17,6 +19,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $hoten = trim($_POST['hoten']);
     $sdt = trim($_POST['sdt']);
     $diachi = trim($_POST['diachi']);
+
     if ($ten == "") $errors["username"] = "Vui lòng nhập tên đăng nhập";
 
     if ($matkhau == "") $errors["password"] = "Vui lòng nhập mật khẩu";
@@ -24,6 +27,17 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     if ($hoten == "") $errors["hoten"] = "Vui lòng nhập họ tên";
 
     if ($diachi == "") $errors["diachi"] = "Vui lòng nhập địa chỉ";
+
+    if ($ten != "") {
+        $check_sql = "SELECT id_nguoi_dung 
+                      FROM nguoi_dung 
+                      WHERE ten_dang_nhap = '$ten'";
+        $check_rs = mysqli_query($conn, $check_sql);
+
+        if (mysqli_num_rows($check_rs) > 0) {
+            $errors["username"] = "Tên đăng nhập đã tồn tại";
+        }
+    }
 
     if (!array_filter($errors)) {
         $sql = "INSERT INTO nguoi_dung (ten_dang_nhap, mat_khau, ho_ten, so_dien_thoai, dia_chi)
