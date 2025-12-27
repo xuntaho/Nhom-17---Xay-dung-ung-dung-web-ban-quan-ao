@@ -27,6 +27,18 @@ $sql_size = "
       AND spkc.so_luong > 0
 ";
 $rs_size = mysqli_query($conn, $sql_size);
+$kho_theo_size = [];
+
+$rs_kho = mysqli_query(
+    $conn,
+    "SELECT id_kich_co, so_luong
+     FROM san_pham_kich_co
+     WHERE id_san_pham = $id"
+);
+
+while ($r = mysqli_fetch_assoc($rs_kho)) {
+    $kho_theo_size[$r['id_kich_co']] = (int)$r['so_luong'];
+}
 
 
 if (!isset($_SESSION['gio_hang'])) {
@@ -37,7 +49,32 @@ if (!isset($_SESSION['gio_hang'])) {
 if (isset($_POST['add_to_cart'])) {
     $id_sp   = (int)$_POST['id_san_pham'];
     $id_size = (int)$_POST['size'];
-    $qty     = max(1, (int)$_POST['soluong']);
+    if ($id_size <= 0) {
+    header("Location: chitietsanpham.php?id=$id_sp");
+    exit;
+}
+
+    $qty = (int)$_POST['soluong'];
+if ($qty < 1) {
+    header("Location: chitietsanpham.php?id=$id_sp");
+    exit;
+}
+
+$rs = mysqli_query(
+    $conn,
+    "SELECT so_luong FROM san_pham_kich_co
+     WHERE id_san_pham = $id_sp AND id_kich_co = $id_size"
+);
+if (!$rs || mysqli_num_rows($rs) == 0) exit;
+
+$row = mysqli_fetch_assoc($rs);
+$ton_kho = (int)$row['so_luong'];
+
+if ($qty > $ton_kho) {
+    header("Location: chitietsanpham.php?id=$id_sp");
+    exit;
+}
+
 
     if ($id_sp > 0 && $id_size > 0) {
         $key = $id_sp . "-" . $id_size;
@@ -49,7 +86,12 @@ if (isset($_POST['add_to_cart'])) {
                 'so_luong'    => $qty
             ];
         } else {
-            $_SESSION['gio_hang'][$key]['so_luong'] += $qty;
+            if ($_SESSION['gio_hang'][$key]['so_luong'] + $qty > $ton_kho) {
+                header("Location: chitietsanpham.php?id=$id_sp");
+    exit;
+}
+$_SESSION['gio_hang'][$key]['so_luong'] += $qty;
+
         }
 
         header("Location: giohang.php");
@@ -176,7 +218,12 @@ if (isset($_POST['add_to_cart'])) {
             <p id="err_size" class="err-size"></p>
 
             <label><b>Số lượng:</b></label><br>
-            <input type="number" name="soluong" value="1" min="1">
+            <input type="number"
+                   name="soluong"
+                   id="soluong"
+                   min="1"
+                   required>
+
 
             <br><br>
             <button class="btn-add" name="add_to_cart">
@@ -221,17 +268,43 @@ if (isset($_POST['add_to_cart'])) {
 </footer>
 
 <script>
+const tonKhoTheoSize = <?= json_encode($kho_theo_size) ?>;
+
 function kiemTra() {
     const size = document.getElementById("size").value;
-    const err = document.getElementById("err_size");
+    const err  = document.getElementById("err_size");
+    const qty  = document.getElementById("soluong");
+
     err.innerHTML = "";
+
     if (size === "") {
         err.innerHTML = "Vui lòng chọn size!";
         return false;
     }
+
+    if (qty.value < 1) return false;
+
+    if (parseInt(qty.value) > parseInt(qty.max)) {
+    return false;
+}
+
+
     return true;
 }
+
+document.getElementById("size").addEventListener("change", function () {
+    const size = this.value;
+    const qty  = document.getElementById("soluong");
+
+    if (tonKhoTheoSize[size] !== undefined) {
+        qty.max = tonKhoTheoSize[size];
+        qty.value = 1;
+    } else {
+        qty.removeAttribute("max");
+    }
+});
 </script>
+
 
 </body>
 </html>

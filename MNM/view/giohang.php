@@ -13,9 +13,32 @@ if (isset($_GET['add'])) {
 
     $id_sp   = (int)$_GET['add'];
     $id_size = (int)$_GET['size'];
-    $qty     = max(1, (int)$_GET['soluong']);
+    $qty = (int)$_GET['soluong'];
+    if ($qty < 1) {
+        header("Location: giohang.php");
+        exit;
+    }
+
+
 
     if ($id_sp > 0 && $id_size > 0) {
+        $rs_kho = mysqli_query(
+    $conn,
+    "SELECT so_luong FROM san_pham_kich_co
+     WHERE id_san_pham = $id_sp AND id_kich_co = $id_size"
+);
+if (!$rs_kho || mysqli_num_rows($rs_kho) == 0) exit;
+
+$row_kho = mysqli_fetch_assoc($rs_kho);
+$ton_kho = (int)$row_kho['so_luong'];
+
+// ❌ nhập vượt kho → chặn
+if ($qty > $ton_kho) {
+    header("Location: giohang.php");
+    exit;
+}
+
+
 
         $key = $id_sp . "-" . $id_size;
 
@@ -28,7 +51,11 @@ if (isset($_GET['add'])) {
             ];
 
         } else {
-            $_SESSION['gio_hang'][$key]['so_luong'] += $qty;
+            if ($_SESSION['gio_hang'][$key]['so_luong'] + $qty > $ton_kho) {
+    exit;
+}
+$_SESSION['gio_hang'][$key]['so_luong'] += $qty;
+
         }
     }
 
@@ -58,11 +85,11 @@ if (isset($_POST['update'])) {
     $rs = mysqli_query($conn, $sql);
     $row = mysqli_fetch_assoc($rs);
     if (!$row) {
-        header("Location: giohang.php?err=invalid");
+        header("Location: giohang.php");
         exit;
     }
     if ($new_qty > (int)$row['so_luong']) {
-        header("Location: giohang.php?err=out-of-stock");
+        header("Location: giohang.php");
         exit;
     }
     $_SESSION['gio_hang'][$new_key] = [
@@ -248,6 +275,15 @@ WHERE sp.id_san_pham = $id_sp";
 $rs = mysqli_query($conn, $sql);
 $row = mysqli_fetch_assoc($rs);
 
+$rs_kho = mysqli_query(
+    $conn,
+    "SELECT so_luong FROM san_pham_kich_co
+     WHERE id_san_pham = $id_sp AND id_kich_co = $id_size"
+);
+$row_kho = mysqli_fetch_assoc($rs_kho);
+$ton_kho = (int)$row_kho['so_luong'];
+
+
 $thanh_tien = $row['gia'] * $item['so_luong'];
 $tong_tien += $thanh_tien;
 ?>
@@ -272,7 +308,13 @@ $tong_tien += $thanh_tien;
                     <?php endwhile; ?>
                 </select>
             </p>
-            <p>Số lượng:<input type="number" min="1" name="soluong" value="<?= $item['so_luong'] ?>">
+            <p>Số lượng:<input type="number"
+       name="soluong"
+       min="1"
+       max="<?= $ton_kho ?>"
+       value="<?= $item['so_luong'] ?>"
+       required>
+
             </p>
             <button class="btn-update">Cập nhật</button>
 </form>
