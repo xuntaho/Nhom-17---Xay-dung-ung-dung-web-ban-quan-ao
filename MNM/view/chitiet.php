@@ -62,7 +62,7 @@ if (isset($_POST['add_to_cart'])) {
 <head>
 <meta charset="UTF-8">
 <title><?php echo $sp['ten_san_pham']; ?> - MIUSA</title>
-
+<link href="https://fonts.googleapis.com/css2?family=Josefin+Sans:wght@400;700&family=Istok+Web:wght@400;700&display=swap" rel="stylesheet">
 <link rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 <link rel="stylesheet" href="../style/css.css">
@@ -185,7 +185,33 @@ if (isset($_POST['add_to_cart'])) {
     </div>
 </div>
 
-<footer class="footer"></footer>
+<footer class="footer">
+    <ul class="info">
+      <h4>HỘ KINH DOANH MIUSA</h4>
+    </ul>
+
+    <ul class="info">
+      <h4>LIÊN KẾT</h4>
+      <li>Chính sách bảo mật</li>
+      <li>Hướng dẫn mua hàng</li>
+      <li>Chính sách đổi trả</li>
+      <li>Hướng dẫn thanh toán</li>
+      <li>Chính sách vận chuyển</li>
+      <li>Chính sách kiểm hàng</li>
+    </ul>
+
+    <ul class="info">
+      <h4>THÔNG TIN LIÊN HỆ</h4>
+      <li><i class="fa fa-phone"></i> 0909090909</li>
+      <li><i class="fa fa-location-arrow"></i> 180 Cao Lỗ, P. Chánh Hưng, TPHCM</li>
+    </ul>
+
+    <ul class="info">
+      <h4>FANPAGE</h4>
+      <li><img src="../images/fb.png" class="anh"></li>
+      <li><img src="../images/instagram.png" class="anh"></li>
+    </ul>
+</footer>
 
 <script>
 function kiemTra() {
