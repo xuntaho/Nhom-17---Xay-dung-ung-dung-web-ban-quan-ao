@@ -237,8 +237,7 @@ $tong_tien += $thanh_tien;
                     <?php endwhile; ?>
                 </select>
             </p>
-            <p>Số lượng:
-                <input type="number" min="1" name="soluong" value="<?= $item['so_luong'] ?>">
+            <p>Số lượng:<input type="number" min="1" name="soluong" value="<?= $item['so_luong'] ?>">
             </p>
             <button class="btn-update">Cập nhật</button>
 </form>
