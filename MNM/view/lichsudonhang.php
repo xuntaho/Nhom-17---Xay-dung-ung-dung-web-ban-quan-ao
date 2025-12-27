@@ -1,3 +1,20 @@
+<?php
+session_start();
+include "../config/database.php";
+
+if (!isset($_SESSION['id_nguoi_dung'])) {
+    echo '<div style="background:#d1cac3; height:100vh; display:flex; justify-content:center; align-items:center; flex-direction:column; font-family:Josefin Sans; color:#5b3920;">
+            <h1 style="font-size:42px;">Bạn phải đăng nhập để xem lịch sử đơn hàng</h1>
+            <a href="dangnhap.php" style="font-size:22px; color:#5b3920; text-decoration:none;">Đăng nhập ngay</a>
+          </div>';
+    exit;
+}
+
+$id_nguoi_dung = $_SESSION['id_nguoi_dung'];
+$sql = "SELECT * FROM don_hang WHERE id_nguoi_dung = $id_nguoi_dung ORDER BY ngay_dat DESC";
+$rs = mysqli_query($conn, $sql);
+?>
+
 <!DOCTYPE html>
 <html lang="vi">
 <head>
@@ -73,9 +90,7 @@
 </header>
 
 <div class="page-wrapper">
-    <h1 style="font-size:38px; color:#5b3920; margin-bottom:20px;">
-        Lịch sử đơn hàng
-    </h1>
+    <h1 style="font-size:38px; color:#5b3920; margin-bottom:20px;">Lịch sử đơn hàng</h1>
 
     <table class="order-table">
         <tr>
@@ -85,27 +100,14 @@
             <th>Trạng thái</th>
         </tr>
 
-        
+        <?php while ($dh = mysqli_fetch_assoc($rs)) { ?>
         <tr>
-            <td>DH001</td>
-            <td>12/05/2025</td>
-            <td>1.250.000đ</td>
-            <td>Đã giao</td>
+            <td><?= $dh['id_don_hang'] ?></td>
+            <td><?= $dh['ngay_dat'] ?></td>
+            <td><?= number_format($dh['tong_tien']) ?>đ</td>
+            <td><?= $dh['trang_thai'] ?></td>
         </tr>
-
-        <tr>
-            <td>DH002</td>
-            <td>20/05/2025</td>
-            <td>890.000đ</td>
-            <td>Đang giao</td>
-        </tr>
-
-        <tr>
-            <td>DH003</td>
-            <td>01/06/2025</td>
-            <td>2.100.000đ</td>
-            <td>Chờ xác nhận</td>
-        </tr>
+        <?php } ?>
     </table>
 
     <a href="index.php" class="btn-back">Tiếp tục mua sắm</a>
