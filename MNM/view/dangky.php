@@ -1,3 +1,40 @@
+<?php
+session_start();
+include "../config/database.php";
+
+$errors = [
+    "username" => "",
+    "password" => "",
+    "hoten" => "",
+    "sdt" => "",
+    "diachi" => ""
+];
+
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
+
+    $ten = trim($_POST['username']);
+    $matkhau = trim($_POST['password']);
+    $hoten = trim($_POST['hoten']);
+    $sdt = trim($_POST['sdt']);
+    $diachi = trim($_POST['diachi']);
+    if ($ten == "") $errors["username"] = "Vui lòng nhập tên đăng nhập";
+
+    if ($matkhau == "") $errors["password"] = "Vui lòng nhập mật khẩu";
+
+    if ($hoten == "") $errors["hoten"] = "Vui lòng nhập họ tên";
+
+    if ($diachi == "") $errors["diachi"] = "Vui lòng nhập địa chỉ";
+
+    if (!array_filter($errors)) {
+        $sql = "INSERT INTO nguoi_dung (ten_dang_nhap, mat_khau, ho_ten, so_dien_thoai, dia_chi)
+                VALUES ('$ten', '$matkhau', '$hoten', '$sdt', '$diachi')";
+
+        mysqli_query($conn, $sql);
+
+        $success = "Đăng ký thành công!";
+    }
+}
+?>
 <!DOCTYPE html>
 <html lang="vi">
 <head>
@@ -7,7 +44,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Josefin+Sans:wght@400;700&family=Istok+Web:wght@400;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="../style/login.css">
 </head>
-<body>
+<body class="body">
 <header class="header">
     <div class="logo">MIU<span>SA</span></div>
     <nav class="menu">
@@ -16,46 +53,51 @@
             <i class="fa fa-search search-icon"></i>
         </div>
         <a href="index.php"><i class="fa fa-home"></i> Home</a>
-        <a href=""><i class="fa-solid fa-cart-shopping"></i> Giỏ hàng</a>
-        <a href="">Lịch sử đơn hàng</a>
-        <a href="">About</a>
+        <a href="giohang.php"><i class="fa-solid fa-cart-shopping"></i> Giỏ hàng</a>
+        <a href="lichsudonhang.php">Lịch sử đơn hàng</a>
+        <a href="about.php">About</a>
         <a href="dangnhap.php"><i class="fa-solid fa-user"></i> Đăng nhập</a>
     </nav>
 </header>
 <div class="login-wrap">
   <div class="login-container">
     <h2 class="title">Đăng ký</h2>
-    <form class="login-form" id="registerForm">
 
-    <label>Tên đăng nhập</label>
-    <input type="text" id="username">
-    <p class="error" id="err-username"></p>
+    <?php if (!empty($success)) { ?>
+        <p style="color: green; font-weight: bold;"><?= $success ?></p>
+    <?php } ?>
 
-    <label>Mật khẩu</label>
-    <input type="password" id="password">
-    <p class="error" id="err-password"></p>
+    <form class="login-form" method="post" action="dangky.php">
 
-    <label>Họ tên</label>
-    <input type="text" id="hoten">
-    <p class="error" id="err-hoten"></p>
+        <label>Tên đăng nhập</label>
+        <input type="text" name="username" value="<?= $ten ?? '' ?>">
+        <p class="error"><?= $errors["username"] ?></p>
 
-    <label>Số điện thoại</label>
-    <input type="text" id="sdt">
-    <p class="error" id="err-sdt"></p>
+        <label>Mật khẩu</label>
+        <input type="password" name="password">
+        <p class="error"><?= $errors["password"] ?></p>
 
-    <label>Địa chỉ</label>
-    <input type="text" id="diachi">
-    <p class="error" id="err-diachi"></p>
+        <label>Họ tên</label>
+        <input type="text" name="hoten" value="<?= $hoten ?? '' ?>">
+        <p class="error"><?= $errors["hoten"] ?></p>
+        
+        <label>Số điện thoại</label>
+        <input type="text" name="sdt" value="<?= $sdt ?? '' ?>">
+        <p class="error"><?= $errors["sdt"] ?></p>
 
-    <button type="submit" class="btn-login">Đăng ký</button>
+        <label>Địa chỉ</label>
+        <input type="text" name="diachi" value="<?= $diachi ?? '' ?>">
+        <p class="error"><?= $errors["diachi"] ?></p>
 
-</form>
+        <button type="submit" class="btn-login">Đăng ký</button>
 
-</div>
+        <p class="signup">Đã có tài khoản? <a href="dangnhap.php">Đăng nhập</a></p>
+    </form>
+  </div>
 </div>
 <footer class="footer">
     <ul class="info">
-      <h4>HỘ KINH DOANH MIUSA </h4>
+      <h4>HỘ KINH DOANH MIUSA</h4>
     </ul>
 
     <ul class="info">
@@ -80,53 +122,5 @@
       <li><img src="../images/instagram.png" class="anh"></li>
     </ul>
 </footer>
-<script>
-document.getElementById("registerForm").addEventListener("submit", function(e) {
-    e.preventDefault(); 
-
-    const username = document.getElementById("username").value.trim();
-    const password = document.getElementById("password").value;
-    const hoten    = document.getElementById("hoten").value.trim();
-    const sdt      = document.getElementById("sdt").value.trim();
-    const diachi   = document.getElementById("diachi").value.trim();
-
-    const regexPassword = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^a-zA-Z0-9]).{6,}$/;
-    const regexPhone = /^[0-9]{10,11}$/;
-
-    document.querySelectorAll(".error").forEach(e => e.innerText = "");
-
-    let valid = true;
-
-    if (username === "") {
-        document.getElementById("err-username").innerText = "Vui lòng nhập tên đăng nhập";
-        valid = false;
-    }
-
-    if (!regexPassword.test(password)) {
-        document.getElementById("err-password").innerText =
-            "Mật khẩu ≥6 ký tự, gồm hoa, thường, số, ký tự đặc biệt";
-        valid = false;
-    }
-
-    if (hoten === "") {
-        document.getElementById("err-hoten").innerText = "Vui lòng nhập họ tên";
-        valid = false;
-    }
-
-    if (!regexPhone.test(sdt)) {
-        document.getElementById("err-sdt").innerText = "Số điện thoại 10–11 số";
-        valid = false;
-    }
-
-    if (diachi === "") {
-        document.getElementById("err-diachi").innerText = "Vui lòng nhập địa chỉ";
-        valid = false;
-    }
-
-    if (valid) {
-        alert("Đăng ký hợp lệ");
-    }
-});
-</script>
 </body>
 </html>
