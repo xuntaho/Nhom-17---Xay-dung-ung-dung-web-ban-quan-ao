@@ -35,27 +35,61 @@ if (!isset($_SESSION['gio_hang'])) {
 
 
 if (isset($_POST['add_to_cart'])) {
+
+    if (!isset($_SESSION['id_nguoi_dung'])) {
+        header("Location: dangnhap.php?msg=login-required");
+        exit;
+    }
+
     $id_sp   = (int)$_POST['id_san_pham'];
     $id_size = (int)$_POST['size'];
     $qty     = max(1, (int)$_POST['soluong']);
 
-    if ($id_sp > 0 && $id_size > 0) {
-        $key = $id_sp . "-" . $id_size;
+    // LẤY TỒN KHO
+    $sql_kho = "
+        SELECT so_luong 
+        FROM san_pham_kich_co
+        WHERE id_san_pham = $id_sp
+          AND id_kich_co  = $id_size
+    ";
+    $rs_kho  = mysqli_query($conn, $sql_kho);
+    $row_kho = mysqli_fetch_assoc($rs_kho);
 
-        if (!isset($_SESSION['gio_hang'][$key])) {
-            $_SESSION['gio_hang'][$key] = [
-                'id_san_pham' => $id_sp,
-                'id_kich_co'  => $id_size,
-                'so_luong'    => $qty
-            ];
-        } else {
-            $_SESSION['gio_hang'][$key]['so_luong'] += $qty;
-        }
-
-        header("Location: giohang.php");
+    if (!$row_kho) {
+        header("Location: chitiet.php?id=$id&err=invalid-size");
         exit;
     }
+
+    $ton_kho = (int)$row_kho['so_luong'];
+    $key = $id_sp . "-" . $id_size;
+
+    // 🔴 TÍNH TỔNG SP + SIZE TRONG GIỎ (KHÔNG DÙNG KEY)
+    $dang_co = 0;
+    foreach ($_SESSION['gio_hang'] as $item) {
+        if (
+            $item['id_san_pham'] == $id_sp &&
+            $item['id_kich_co']  == $id_size
+        ) {
+            $dang_co += $item['so_luong'];
+        }
+    }
+
+    if ($dang_co + $qty > $ton_kho) {
+        header("Location: chitiet.php?id=$id&err=out-of-stock");
+        exit;
+    }
+
+    // GHI / GỘP GIỎ
+    $_SESSION['gio_hang'][$key] = [
+        'id_san_pham' => $id_sp,
+        'id_kich_co'  => $id_size,
+        'so_luong'    => $dang_co + $qty
+    ];
+
+    header("Location: giohang.php");
+    exit;
 }
+
 ?>
 <!DOCTYPE html>
 <html lang="vi">
@@ -172,11 +206,21 @@ if (isset($_POST['add_to_cart'])) {
                     </option>
                 <?php } ?>
             </select>
-
-            <p id="err_size" class="err-size"></p>
-
+            <br>
             <label><b>Số lượng:</b></label><br>
             <input type="number" name="soluong" value="1" min="1">
+            <p id="err_size" class="err-size">
+            <?php
+            if (isset($_GET['err'])) {
+            if ($_GET['err'] == 'out-of-stock') {
+            echo "Số lượng vượt quá tồn kho!";
+            }
+            if ($_GET['err'] == 'invalid-size') {
+            echo "Size không hợp lệ!";
+            }
+}
+?>
+</p>
 
             <br><br>
             <button class="btn-add" name="add_to_cart">

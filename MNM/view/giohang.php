@@ -36,7 +36,6 @@ if (isset($_GET['add'])) {
     exit;
 }
 
-
 if (isset($_GET['xoa'])) {
     unset($_SESSION['gio_hang'][$_GET['xoa']]);
     header("Location: giohang.php");
@@ -187,8 +186,25 @@ border-radius: 12px;
     </nav>
 </header>
 <div class="cart-container">
-
-<h2 class="cart-title">Giỏ hàng của bạn</h2>
+<?php
+if (isset($_GET['err'])) {
+    if ($_GET['err'] == 'out-of-stock') {
+        echo "<p style='color:red;font-weight:bold;'>
+                Số lượng vượt quá tồn kho!
+              </p>";
+    }
+    if ($_GET['err'] == 'invalid') {
+        echo "<p style='color:red;font-weight:bold;'>
+                Sản phẩm hoặc size không hợp lệ!
+              </p>";
+    }
+}
+if (isset($_GET['msg']) && $_GET['msg'] == 'updated') {
+    echo "<p style='color:green;font-weight:bold;'>
+            Cập nhật giỏ hàng thành công!
+          </p>";
+}
+?>
 
 <?php if (empty($_SESSION['gio_hang'])): ?>
 
@@ -237,8 +253,7 @@ $tong_tien += $thanh_tien;
                     <?php endwhile; ?>
                 </select>
             </p>
-            <p>Số lượng:
-                <input type="number" min="1" name="soluong" value="<?= $item['so_luong'] ?>">
+            <p>Số lượng:<input type="number" min="1" name="soluong" value="<?= $item['so_luong'] ?>">
             </p>
             <button class="btn-update">Cập nhật</button>
 </form>
