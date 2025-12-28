@@ -1,0 +1,149 @@
+<?php
+session_start();
+include "../config/database.php";
+
+if (!isset($_SESSION['id_nguoi_dung'])) {
+    echo '<div style="background:#d1cac3; height:100vh; display:flex; justify-content:center; align-items:center; flex-direction:column; font-family:Josefin Sans; color:#5b3920;">
+            <h1 style="font-size:42px;">Bạn phải đăng nhập để xem lịch sử đơn hàng</h1>
+            <a href="dangnhap.php" style="font-size:22px; color:#5b3920; text-decoration:none;">Đăng nhập ngay</a>
+          </div>';
+    exit;
+}
+
+$id_nguoi_dung = $_SESSION['id_nguoi_dung'];
+$sql = "SELECT * FROM don_hang WHERE id_nguoi_dung = $id_nguoi_dung ORDER BY ngay_dat DESC";
+$rs = mysqli_query($conn, $sql);
+?>
+
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<title>Lịch sử đơn hàng</title>
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<link href="https://fonts.googleapis.com/css2?family=Josefin+Sans:wght@400;700&family=Istok+Web:wght@400;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&display=swap">
+<link rel="stylesheet" href="../style/css.css">
+
+<style>
+.page-wrapper {
+    width: 80%;
+    margin: 160px auto 50px;
+    text-align: center;
+}
+
+.order-table {
+    width: 100%;
+    border-collapse: collapse;
+    background: #f5eee9;
+    border-radius: 15px;
+    overflow: hidden;
+    font-size: 20px;
+}
+
+.order-table th {
+    background: #5b3920;
+    color: white;
+    padding: 15px;
+    font-size: 22px;
+}
+
+.order-table td {
+    padding: 15px;
+    border-bottom: 1px solid #c8bfb8;
+    color: #5b3920;
+}
+
+.order-table tr:last-child td {
+    border-bottom: none;
+}
+
+.btn-back {
+    margin-top: 25px;
+    display: inline-block;
+    padding: 15px 30px;
+    background: #5b3920;
+    color: white;
+    border-radius: 10px;
+    font-size: 22px;
+    text-decoration: none;
+}
+.btn-back:hover { background:#7b573b; }
+</style>
+</head>
+
+<body class="body">
+<header class="header">
+    <div class="logo">MIU<span>SA</span></div>
+    <nav class="menu">
+        <?php include "timkiem.php"; ?>
+        <a href="index.php"><i class="fa fa-home"></i> Home</a>
+        <a href="giohang.php"><i class="fa-solid fa-cart-shopping"></i> Giỏ hàng</a>
+        <a href="lichsudonhang.php">Lịch sử đơn hàng</a>
+        <a href="about.php">About</a>
+        <?php if (!isset($_SESSION["id_nguoi_dung"])) { ?>
+            <a href="dangnhap.php"><i class="fa-solid fa-user"></i> Đăng nhập</a>
+        <?php } else { ?>
+            <span style="color:black;font-size:15px;">
+                Chào bạn <?php echo $_SESSION["ten_dang_nhap"]; ?>
+            </span>
+            <a href="thongtintaikhoan.php"><i class="fa-solid fa-user"></i> Tài khoản</a>
+        <?php } ?>
+    </nav>
+</header>
+
+<div class="page-wrapper">
+    <h1 style="font-size:38px; color:#5b3920; margin-bottom:20px;">Lịch sử đơn hàng</h1>
+
+    <table class="order-table">
+        <tr>
+            <th>Mã đơn</th>
+            <th>Ngày đặt</th>
+            <th>Tổng tiền</th>
+            <th>Trạng thái</th>
+        </tr>
+
+        <?php while ($dh = mysqli_fetch_assoc($rs)) { ?>
+        <tr>
+            <td><?= $dh['id_don_hang'] ?></td>
+            <td><?= $dh['ngay_dat'] ?></td>
+            <td><?= number_format($dh['tong_tien']) ?>đ</td>
+            <td><?= $dh['trang_thai'] ?></td>
+        </tr>
+        <?php } ?>
+    </table>
+
+    <a href="index.php" class="btn-back">Tiếp tục mua sắm</a>
+</div>
+
+<footer class="footer">
+    <ul class="info">
+      <h4>HỘ KINH DOANH MIUSA </h4>
+    </ul>
+
+    <ul class="info">
+      <h4>LIÊN KẾT</h4>
+      <li>Chính sách bảo mật</li>
+      <li>Hướng dẫn mua hàng</li>
+      <li>Chính sách đổi trả</li>
+      <li>Hướng dẫn thanh toán</li>
+      <li>Chính sách vận chuyển</li>
+      <li>Chính sách kiểm hàng</li>
+    </ul>
+
+    <ul class="info">
+      <h4>THÔNG TIN LIÊN HỆ</h4>
+      <li><i class="fa fa-phone"></i> 0909090909</li>
+      <li><i class="fa fa-location-arrow"></i> 180 Cao Lỗ, P. Chánh Hưng, TPHCM</li>
+    </ul>
+
+    <ul class="info">
+      <h4>FANPAGE</h4>
+      <li><img src="../images/fb.png" class="anh"></li>
+      <li><img src="../images/instagram.png" class="anh"></li>
+    </ul>
+</footer>
+
+</body>
+</html>
