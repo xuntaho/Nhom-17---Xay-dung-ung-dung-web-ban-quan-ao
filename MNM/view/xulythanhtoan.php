@@ -72,4 +72,3 @@ unset($_SESSION['gio_hang']);
 header("Location: dathangthanhcong.php?id=$id_don_hang");
 exit;
 ?>
-

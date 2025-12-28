@@ -2,6 +2,10 @@
 session_start();
 include "../config/database.php";
 
+if (!isset($_SESSION['id_nguoi_dung'])) {
+    header("Location: dangnhap.php");
+    exit;
+}
 if (!isset($_GET['id'])) {
     header("Location: index.php");
     exit;

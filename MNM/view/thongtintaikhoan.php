@@ -95,7 +95,7 @@ if (!$user) {
 
     <br>
 
-    <a href="capnhat_taikhoan.php" class="btn">Cập nhật thông tin</a>
+    <a href="capnhatthongtin.php" class="btn">Cập nhật thông tin</a>
     <a href="doimatkhau.php" class="btn">Đổi mật khẩu</a>
     <a href="dangxuat.php" class="btn btn-logout">Đăng xuất</a>
 </div>

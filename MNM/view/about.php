@@ -1,3 +1,12 @@
+<?php
+session_start();
+include "../config/database.php";
+
+if (!isset($_SESSION['id_nguoi_dung'])) {
+    header("Location: dangnhap.php");
+    exit;
+}
+?>
 <!DOCTYPE html>
 <html lang="vi">
 <head>
