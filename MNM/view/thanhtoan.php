@@ -133,7 +133,7 @@ foreach ($_SESSION['gio_hang'] as $item) {
 
 <h2>Thông tin thanh toán</h2>
 
-<div class="total-demo">Tổng tiền: 1.000.000đ</div>
+<div class="total-demo">Tổng tiền: <?= number_format($tong_tien) ?>đ</div>
 
 <form method="post" action="xulythanhtoan.php" onsubmit="return checkPay();">
 
