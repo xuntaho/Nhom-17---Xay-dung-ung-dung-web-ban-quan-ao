@@ -56,25 +56,25 @@
 </head>
 
 <body class="body">
-
-<!-- HEADER ĐỒNG BỘ -->
 <header class="header">
     <div class="logo">MIU<span>SA</span></div>
     <nav class="menu">
-        <div class="search-box">
-            <input type="text" class="search" placeholder="Tìm sản phẩm...">
-            <i class="fa fa-search search-icon"></i>
-        </div>
         <?php include "timkiem.php"; ?>
         <a href="index.php"><i class="fa fa-home"></i> Home</a>
         <a href="giohang.php"><i class="fa-solid fa-cart-shopping"></i> Giỏ hàng</a>
-        <a href="lichsu.php">Lịch sử đơn hàng</a>
+        <a href="lichsudonhang.php">Lịch sử đơn hàng</a>
         <a href="about.php">About</a>
-        <a href="dangnhap.php"><i class="fa-solid fa-user"></i> Đăng nhập</a>
+        <?php if (!isset($_SESSION["id_nguoi_dung"])) { ?>
+            <a href="dangnhap.php"><i class="fa-solid fa-user"></i> Đăng nhập</a>
+        <?php } else { ?>
+            <span style="color:black;font-size:15px;">
+                Chào bạn <?php echo $_SESSION["ten_dang_nhap"]; ?>
+            </span>
+            <a href="thongtintaikhoan.php"><i class="fa-solid fa-user"></i> Tài khoản</a>
+        <?php } ?>
     </nav>
 </header>
 
-<!-- SUCCESS -->
 <div class="success-wrapper">
     <div class="success-box">
         <div style="font-size:70px;color:#5b3920;">✔</div>
@@ -92,7 +92,6 @@
     </div>
 </div>
 
-<!-- FOOTER -->
 <footer class="footer">
     <ul class="info">
       <h4>HỘ KINH DOANH MIUSA</h4>
