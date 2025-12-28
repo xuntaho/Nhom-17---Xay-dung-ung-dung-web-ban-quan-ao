@@ -72,39 +72,51 @@ if (isset($_GET['xoa'])) {
 
 if (isset($_POST['update'])) {
 
-    $old_key  = $_POST['update'];
+    $old_key = $_POST['update'];
+    if (!isset($_SESSION['gio_hang'][$old_key])) {
+        header("Location: giohang.php");
+        exit;
+    }
+
+    $id_sp    = (int)$_SESSION['gio_hang'][$old_key]['id_san_pham'];
     $new_size = (int)$_POST['size'];
     $new_qty  = max(1, (int)$_POST['soluong']);
-
-    list($id_sp, $old_size) = explode("-", $old_key);
-    $new_key = $id_sp . "-" . $new_size;
     $sql = "SELECT so_luong 
             FROM san_pham_kich_co 
             WHERE id_san_pham = $id_sp 
               AND id_kich_co  = $new_size";
-    $rs = mysqli_query($conn, $sql);
+    $rs  = mysqli_query($conn, $sql);
     $row = mysqli_fetch_assoc($rs);
+
     if (!$row) {
-        header("Location: giohang.php");
+        header("Location: giohang.php?err=invalid");
         exit;
     }
-    if ($new_qty > (int)$row['so_luong']) {
-        header("Location: giohang.php");
+
+    $ton_kho = (int)$row['so_luong'];
+    $new_key = $id_sp . "-" . $new_size;
+    $dang_co = 0;
+    if (isset($_SESSION['gio_hang'][$new_key]) && $new_key !== $old_key) {
+        $dang_co = $_SESSION['gio_hang'][$new_key]['so_luong'];
+    }
+
+    if ($dang_co + $new_qty > $ton_kho) {
+        header("Location: giohang.php?err=out-of-stock");
         exit;
     }
+    unset($_SESSION['gio_hang'][$old_key]);
+
+    // ✅ gộp đúng
     $_SESSION['gio_hang'][$new_key] = [
         'id_san_pham' => $id_sp,
         'id_kich_co'  => $new_size,
-        'so_luong'    => $new_qty
+        'so_luong'    => $dang_co + $new_qty
     ];
-
-    if ($new_key != $old_key) {
-        unset($_SESSION['gio_hang'][$old_key]);
-    }
 
     header("Location: giohang.php?msg=updated");
     exit;
 }
+
 
 ?>
 <!DOCTYPE html>
@@ -210,10 +222,6 @@ border-radius: 12px;
 <header class="header">
     <div class="logo">MIU<span>SA</span></div>
     <nav class="menu">
-        <div class="search-box">
-            <input type="text" class="search" placeholder="Tìm sản phẩm...">
-            <i class="fa fa-search search-icon"></i>
-        </div>
         <?php include "timkiem.php"; ?>
         <a href="index.php"><i class="fa fa-home"></i> Home</a>
         <a href="giohang.php"><i class="fa-solid fa-cart-shopping"></i> Giỏ hàng</a>
