@@ -1,3 +1,6 @@
+<?php
+session_start();
+?>
 <!DOCTYPE html>
 <html lang="vi">
 <head>
@@ -73,7 +76,7 @@
     <p class="info-line"><b>Địa chỉ:</b> 180 Cao Lỗ, P. Chánh Hưng, TP.HCM</p><br>
 
     <a href="capnhatthongtin..php" class="btn">Cập nhật thông tin</a>
-    <a href="#" class="btn">Đổi mật khẩu</a>
+    <a href="doimatkhau.php" class="btn">Đổi mật khẩu</a>
     <a href="dangxuat.php" class="btn btn-logout">Đăng xuất</a>
 </div>
 

@@ -1,3 +1,14 @@
+<?php
+session_start();
+include "../config/database.php";
+
+if (!isset($_SESSION['id_nguoi_dung'])) {
+    header("Location: dangnhap.php");
+    exit;
+}
+
+$id_user = $_SESSION['id_nguoi_dung'];
+?>
 <!DOCTYPE html>
 <html lang="vi">
 <head>
@@ -65,22 +76,20 @@ input {
 </header>
 <div class="change-box">
     <h2>Đổi mật khẩu</h2>
-    <p style="color:red; font-size:18px; display:none;">
-        Mật khẩu cũ không đúng
-    </p>
+    <?php if (isset($_GET['err'])) { ?>
+        <p style="color:red; font-size:18px;"><?=$_GET['err']?></p>
+    <?php } ?>
 
-    <p style="color:green; font-size:18px; display:none;">
-        Đổi mật khẩu thành công
-    </p>
+    <?php if (isset($_GET['ok'])) { ?>
+        <p style="color:green; font-size:18px;"><?=$_GET['ok']?></p>
+    <?php } ?>
 
-    <form>
-        <input type="password" placeholder="Nhập mật khẩu cũ" required>
-        <input type="password" placeholder="Nhập mật khẩu mới" required>
-        <input type="password" placeholder="Nhập lại mật khẩu mới" required>
+    <form action="xulydoimatkhau.php" method="post">
+        <input type="password" name="mat_khau_cu" placeholder="Nhập mật khẩu cũ" required>
+        <input type="password" name="mat_khau_moi" placeholder="Nhập mật khẩu mới" required>
+        <input type="password" name="mat_khau_moi2" placeholder="Nhập lại mật khẩu mới" required>
 
-        <button class="btn-submit" type="button">
-            Đổi mật khẩu
-        </button>
+        <button class="btn-submit" name="btn_doimatkhau">Đổi mật khẩu</button>
     </form>
 </div>
 
