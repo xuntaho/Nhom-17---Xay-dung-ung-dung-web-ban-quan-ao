@@ -1,6 +1,7 @@
 <?php
 session_start();
 include "../config/database.php";
+
 if (!isset($_SESSION['id_nguoi_dung'])) {
     header("Location: dangnhap.php");
     exit;
@@ -11,24 +12,51 @@ $sql = "SELECT * FROM nguoi_dung WHERE id_nguoi_dung = $id";
 $user = mysqli_fetch_assoc(mysqli_query($conn, $sql));
 
 $thongbao = "";
+$loi = "";
+
 if (isset($_POST['btn_update'])) {
 
-    $ten_dang_nhap = $_POST['ten_dang_nhap'];
-    $so_dt  = $_POST['so_dien_thoai'];
-    $dia_chi = $_POST['dia_chi'];
+    $ten_dang_nhap = trim($_POST['ten_dang_nhap']);
+    $so_dt  = trim($_POST['so_dien_thoai']);
+    $dia_chi = trim($_POST['dia_chi']);
 
-    $update = "UPDATE nguoi_dung SET 
-                ten_dang_nhap = '$ten_dang_nhap',
-                so_dien_thoai = '$so_dt',
-                dia_chi = '$dia_chi'
-               WHERE id_nguoi_dung = $id";
+    if ($ten_dang_nhap === "") {
+        $loi = "Tên đăng nhập không được để trống";
+    } elseif ($so_dt !== "" && !preg_match('/^[0-9]{9,11}$/', $so_dt)) {
+        $loi = "Số điện thoại không hợp lệ";
+    } else {
 
-    mysqli_query($conn, $update);
-    $_SESSION['ten_dang_nhap'] = $ten_dang_nhap;
-    $thongbao = "Cập nhật thông tin thành công!";
-    $user = mysqli_fetch_assoc(mysqli_query($conn, $sql));
+        $check = mysqli_query($conn, "
+            SELECT id_nguoi_dung 
+            FROM nguoi_dung 
+            WHERE ten_dang_nhap = '$ten_dang_nhap'
+              AND id_nguoi_dung <> $id
+        ");
+
+        if (mysqli_num_rows($check) > 0) {
+            $loi = "Tên đăng nhập đã tồn tại";
+        } else {
+
+            $update = "
+                UPDATE nguoi_dung SET 
+                    ten_dang_nhap = '$ten_dang_nhap',
+                    so_dien_thoai = '$so_dt',
+                    dia_chi = '$dia_chi'
+                WHERE id_nguoi_dung = $id
+            ";
+
+            mysqli_query($conn, $update);
+            $_SESSION['ten_dang_nhap'] = $ten_dang_nhap;
+
+            header("Location: thongtintaikhoan.php?ok=1");
+            exit;
+        }
+    }
 }
+
+$user = mysqli_fetch_assoc(mysqli_query($conn, $sql));
 ?>
+
 <!DOCTYPE html>
 <html lang="vi">
 <head>
@@ -121,6 +149,14 @@ if (isset($_POST['btn_update'])) {
 <div class="container">
 
     <h1>Thông tin tài khoản</h1>
+        <?php if ($loi != ""): ?>
+        <p style="color:red;text-align:center;font-size:18px;"><?= $loi ?></p>
+    <?php endif; ?>
+
+    <?php if (isset($_GET['ok'])): ?>
+        <p class="thongbao">Cập nhật thông tin thành công!</p>
+    <?php endif; ?>
+
 
     <?php if ($thongbao != "") echo "<p class='thongbao'>$thongbao</p>"; ?>
 
