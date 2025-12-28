@@ -1,5 +1,24 @@
 <?php
 session_start();
+include "../config/database.php";
+
+if (!isset($_SESSION['id_nguoi_dung'])) {
+    header("Location: dangnhap.php");
+    exit;
+}
+
+$id = $_SESSION['id_nguoi_dung'];
+
+$sql = "SELECT ten_dang_nhap, so_dien_thoai, dia_chi 
+        FROM nguoi_dung 
+        WHERE id_nguoi_dung = $id";
+
+$rs = mysqli_query($conn, $sql);
+$user = mysqli_fetch_assoc($rs);
+
+if (!$user) {
+    die("Không tìm thấy thông tin người dùng");
+}
 ?>
 <!DOCTYPE html>
 <html lang="vi">
@@ -70,12 +89,13 @@ session_start();
 
 <div class="account-box">
     <h2>Thông tin tài khoản</h2>
+    <p class="info-line"><b>Tên đăng nhập:</b> <?= $user['ten_dang_nhap'] ?></p>
+    <p class="info-line"><b>Số điện thoại:</b> <?= $user['so_dien_thoai'] ?></p>
+    <p class="info-line"><b>Địa chỉ:</b> <?= $user['dia_chi'] ?></p>
 
-    <p class="info-line"><b>Tên đăng nhập:</b> Nguyen Van C</p>
-    <p class="info-line"><b>Số điện thoại:</b> 0909090909</p>
-    <p class="info-line"><b>Địa chỉ:</b> 180 Cao Lỗ, P. Chánh Hưng, TP.HCM</p><br>
+    <br>
 
-    <a href="capnhatthongtin..php" class="btn">Cập nhật thông tin</a>
+    <a href="capnhat_taikhoan.php" class="btn">Cập nhật thông tin</a>
     <a href="doimatkhau.php" class="btn">Đổi mật khẩu</a>
     <a href="dangxuat.php" class="btn btn-logout">Đăng xuất</a>
 </div>
