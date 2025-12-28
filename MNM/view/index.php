@@ -40,8 +40,18 @@ include "../config/database.php";
   <div class="product-container">
 
 <?php
-$sql = "SELECT * FROM san_pham ORDER BY id_san_pham ASC";
+if (isset($_GET['search']) && $_GET['search'] !== '') {
+    $key = mysqli_real_escape_string($conn, $_GET['search']);
+    $sql = "SELECT * 
+            FROM san_pham 
+            WHERE ten_san_pham LIKE '%$key%'
+            ORDER BY id_san_pham ASC";
+} else {
+    $sql = "SELECT * FROM san_pham ORDER BY id_san_pham ASC";
+}
+
 $result = mysqli_query($conn, $sql);
+
 
 if ($result && mysqli_num_rows($result) > 0) {
     while ($row = mysqli_fetch_assoc($result)) {
