@@ -1,3 +1,30 @@
+<?php
+session_start();
+include "../config/database.php";
+
+if (!isset($_SESSION['id_nguoi_dung'])) {
+    header("Location: dangnhap.php");
+    exit;
+}
+
+if (empty($_SESSION['gio_hang'])) {
+    header("Location: giohang.php");
+    exit;
+}
+
+$tong_tien = 0;
+
+foreach ($_SESSION['gio_hang'] as $item) {
+    $id_sp = $item['id_san_pham'];
+    $qty   = $item['so_luong'];
+
+    $rs = mysqli_query($conn, "SELECT gia FROM san_pham WHERE id_san_pham = $id_sp");
+    $sp = mysqli_fetch_assoc($rs);
+
+    $tong_tien += $sp['gia'] * $qty;
+}
+?>
+
 <!DOCTYPE html>
 <html lang="vi">
 <head>
@@ -108,19 +135,19 @@
 
 <div class="total-demo">Tổng tiền: 1.000.000đ</div>
 
-<form onsubmit="return checkPay();">
+<form method="post" action="xulythanhtoan.php" onsubmit="return checkPay();">
 
     <label>Họ tên</label>
-    <input type="text" placeholder="Nhập họ tên" required>
+    <input type="text" placeholder="Nhập họ tên" name="ho_ten" required>
 
     <label>Số điện thoại</label>
-    <input type="text" placeholder="Nhập số điện thoại" required>
+    <input type="text" placeholder="Nhập số điện thoại" name="so_dien_thoai" required>
 
     <label>Địa chỉ nhận hàng</label>
-    <input type="text" placeholder="Nhập địa chỉ" required>
+    <input type="text" placeholder="Nhập địa chỉ" name="dia_chi" required>
 
     <label>Phương thức thanh toán</label>
-    <select id="phuong_thuc" onchange="toggleBank();" required>
+    <select id="phuong_thuc" onchange="toggleBank();" name="phuong_thuc" required>
         <option value="">-- Chọn phương thức --</option>
         <option value="COD">Thanh toán khi nhận hàng (COD)</option>
         <option value="Bank">Chuyển khoản</option>
@@ -128,7 +155,7 @@
 
     <div id="bank_box">
         <label>Ngân hàng</label>
-        <select id="ten_ngan_hang">
+        <select name="ten_ngan_hang" id="ten_ngan_hang">
             <option value="">-- Chọn ngân hàng --</option>
             <option>Vietcombank</option>
             <option>MB Bank</option>
@@ -137,12 +164,11 @@
         </select>
 
         <label>Số tài khoản</label>
-        <input type="text" id="so_tai_khoan" placeholder="Nhập số tài khoản">
+        <input type="text" name="so_tai_khoan" id="so_tai_khoan" placeholder="Nhập số tài khoản">
     </div>
 
     <label>Ghi chú</label>
-    <textarea placeholder="Ghi chú thêm cho đơn hàng..."></textarea>
-
+    <textarea name="ghi_chu" placeholder="Ghi chú thêm cho đơn hàng..."></textarea>
     <button type="submit" class="btn-submit">
         Xác nhận đặt hàng
     </button>
@@ -190,18 +216,21 @@ function toggleBank() {
 
 function checkPay() {
     if (document.getElementById("phuong_thuc").value === "Bank") {
-        if (document.getElementById("ten_ngan_hang").value === "" ||
-            document.getElementById("so_tai_khoan").value.trim() === "") {
+        if (
+            document.getElementById("ten_ngan_hang").value === "" ||
+            document.getElementById("so_tai_khoan").value.trim() === ""
+        ) {
             alert("Vui lòng nhập đầy đủ thông tin ngân hàng!");
             return false;
         }
     }
-    alert("Demo frontend: Đặt hàng thành công!");
-    return false;
+    return true;
 }
+
 </script>
 
 </body>
 </html>
+
 
 
