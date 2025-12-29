@@ -37,6 +37,7 @@ include "../config/database.php";
   <img src="../images/z7280374913426_f2722e5f205dd34472c815d6aecf61f6.jpg" alt="banner">
 </div>
 <div class="content">
+  <p>Phong Nha</p>
   <div class="product-container">
 
 <?php
