@@ -106,7 +106,6 @@ if (isset($_POST['update'])) {
     }
     unset($_SESSION['gio_hang'][$old_key]);
 
-    // ✅ gộp đúng
     $_SESSION['gio_hang'][$new_key] = [
         'id_san_pham' => $id_sp,
         'id_kich_co'  => $new_size,
